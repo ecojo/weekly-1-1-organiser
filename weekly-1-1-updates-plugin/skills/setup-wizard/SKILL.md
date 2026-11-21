@@ -1,110 +1,62 @@
 ---
 name: setup-wizard
-description: Configure the Weekly 1:1 Updates plugin for your team. Use this when a manager wants to set up the plugin for their team—it guides you through connecting required tools (JIRA, Confluence, Outlook/Email, Slack, Teams), defining team members, mapping JIRA boards, setting up email feedback patterns, and creating the Confluence folder structure with permissions. Run this first before using employee or manager update skills.
+description: Configure SiliconRA Weekly 1:1 Organiser for a team — collect team members, issue boards, feedback-email patterns, wiki space, meeting times and permissions, then save a reusable config and optionally create the wiki folder structure. Use first, before employee, manager or scaffolder skills. Trigger with "set up weekly 1:1", "configure 1:1 organiser", "setup wizard".
+license: MIT
+metadata:
+  author: SiliconRA
+  version: "1.0.0"
 ---
 
-# Setup Wizard for Weekly 1:1 Updates
+# Setup Wizard
 
-This skill guides you through configuring the plugin for your team and optionally creates the Confluence infrastructure (folder structure, pages, permissions) needed for weekly 1:1 updates.
+Collect the configuration once, validate it, and save it so all other skills
+can reuse it.
 
-## What You'll Configure
+## What you will configure
 
-1. **Team basics** — Team name, manager email, timezone
-2. **Team members** — Employee names, emails, JIRA board assignments
-3. **Email feedback setup** — How your manager sends weekly feedback (folder-based or direct emails)
-4. **Confluence space** — Create or use existing space for 1:1 pages
-5. **1:1 meeting times** — Auto-discover from Outlook or manually enter each employee's meeting time
-6. **Permissions** — Set manager + employee view access
+1. **Team basics** — team name, manager name and email, timezone.
+2. **Team members** — name, email, issue boards/queries, 1:1 day and time.
+3. **Feedback email** — subject pattern and/or shared folder.
+4. **Wiki** — space key, page-title pattern, date format, parent folder.
+5. **Schedule** — whether to run automatically and by which platform mechanism.
+6. **Scaffolding** — quarterly or half-yearly placeholder pages.
+7. **Permissions** — manager plus the individual employee only.
 
-## Required Connectors
+## Flow
 
-Before running this wizard, ensure you have these connectors enabled in your workspace:
+1. **Check connectors.** For each capability you intend to use
+   (`issues.search`, `mail.search`, `chat.search`, `wiki.find`, `wiki.read`,
+   `wiki.write`), check whether the host provides it. See
+   `../references/connectors-by-platform.md`. Record missing capabilities and
+   tell the user which skills will need pasted data instead.
+2. **Ask the questions** in `../references/config-schema.md`, in order. Do not
+   guess values. Accept "use defaults" where a default exists.
+3. **Discover meeting times** if the user wants: search the calendar for
+   "1:1" and confirm each match, or accept manual entry. Always confirm.
+4. **Show the full config** and ask for confirmation before making changes.
+5. **Create wiki infrastructure** only if requested and the `wiki.write`
+   capability exists: parent folder, employee subfolders, year folders, and
+   placeholder pages for the next period.
+6. **Save the config** in the location the host provides (a config file in the
+   workspace, a secret store, or an in-conversation profile). Never commit
+   real config to a public repo.
+7. **Report** what was created, what was skipped, and which skills are ready.
 
-- **JIRA** (required) — to pull work updates from your boards
-- **Confluence** (required) — to create and read 1:1 pages
-- **Outlook/Email** (required) — to read manager feedback emails
-- **Slack** (optional but recommended) — if your team uses Slack for feedback
-- **Teams** (optional but recommended) — if your team uses Teams for feedback/notes
+## Updating
 
-If any are missing, go to your workspace connectors settings and enable them before continuing.
+Re-run this skill at any time to change the config. Always show a diff of old
+versus new values before saving, and warn that scheduled runs may need to be
+re-created.
 
-## Interactive Configuration Flow
+## Scheduling
 
-When you run this skill, I will ask you the following questions in order. Answer each one:
+Automatic runs depend on the host. See `../references/scheduling-by-platform.md`
+for the correct mechanism per platform, and fall back to manual triggers where
+no scheduler exists.
 
-### Team Setup
-- **Team name** — What should we call this team? (e.g., "Engineering", "Product")
-- **Your email** — Your email address (you're the manager)
-- **Timezone** — Your timezone (e.g., America/Los_Angeles) — used for scheduling
+## References
 
-### Team Members
-- **How many direct reports?** — Tell me how many people report to you
-- **For each employee:**
-  - Name
-  - Email
-  - Which JIRA boards do they work on? (can be multiple)
-  - Separate JIRA board config for each employee? (important if different people track different boards)
-
-### Manager Feedback Email Setup
-- **How is feedback organized?**
-  - Option A: Direct emails to you with subject pattern like "[Name] 1:1 Weekly Feedback"
-  - Option B: All feedback emails in a shared folder called "Weekly Feedback" or similar
-- **Email folder/subject pattern** — Provide the folder name or subject pattern so we can find emails
-
-### Confluence Space
-- **Does a Confluence space exist for your team?**
-  - If yes: What's the space key or name?
-  - If no: I can create one. What should we call it? (e.g., "Weekly Feedback", "Team Updates")
-
-### 1:1 Meeting Times
-I can discover your 1:1 meeting times two ways:
-
-**Option A: Auto-discover from Outlook**
-- I'll search your Outlook calendar for meetings marked "1:1" and extract the day/time for each employee
-- This is fastest if your 1:1 meetings are already scheduled
-
-**Option B: Manual entry**
-- You tell me when each employee's 1:1 is (e.g., "David Hoffmann - Wednesday 9am", "Sarah Chen - Monday 2pm")
-- This is more flexible if meetings aren't yet scheduled or have irregular timing
-
-Choose which approach works for your team.
-
-### Permissions
-- Confirm that 1:1 pages should be visible to manager + that specific employee only (not the whole team)
-
-## What Happens After Configuration
-
-I will:
-
-1. **Validate** all connectors are accessible (try connecting to JIRA, Confluence, Outlook)
-2. **Ask for confirmation** — show you the full config before creating anything
-3. **Create Confluence infrastructure** (if needed):
-   - Main folder: "Weekly Feedback"
-   - Employee subfolders: "{Full Name} 1:1s" (e.g., "David Hoffmann 1:1s")
-   - Year folders inside each: "2026", "2027", etc.
-   - Placeholder 1:1 pages: "{Full Name} - Manager 1:1 - [Date]" for upcoming weeks
-   - Permissions: Manager + employee only
-4. **Save your configuration** to a config file for future use by the scheduled tasks and update skills
-
-## Important Notes
-
-- **Config is reusable** — Once saved, the employee and manager update skills will use this config automatically
-- **Edit config anytime** — If team members change, JIRA boards change, or meeting times shift, you can re-run this wizard to update
-- **Confluence creation is optional** — If you already have a space set up, you can skip creating new infrastructure
-- **Timezones matter** — Make sure your timezone is correct so scheduled tasks run at the right time
-
-## Next Steps
-
-After setup:
-
-- **For employees**: They run the "Employee 1:1 Prep" skill each week (or it's scheduled to run automatically before their 1:1)
-- **For you (manager)**: You run the "Manager Pulls All Reports" skill to get a consolidated view of all team updates, or it's scheduled to run before each employee's meeting
-- **Weekly scaffolding**: The plugin automatically pre-creates placeholder 1:1 pages for next quarter on a monthly schedule
-
----
-
-## Running the Setup Wizard
-
-I'm ready to guide you through this. Just tell me you want to set up the plugin, and I'll ask the questions above step-by-step. Once you answer them all, I'll validate, create infrastructure, and save your config.
-
-Ready to get started?
+- `../references/config-schema.md` — fields, defaults and config example
+- `../references/connectors-by-platform.md` — capability mapping
+- `../references/scheduling-by-platform.md` — scheduling options
+- `../references/privacy.md` — permissions and data handling

@@ -1,223 +1,102 @@
-# :octopus: Octopus 1-1-Organiser Plugin for Claude [Manager and Employee Mode]
+# SiliconRA Weekly 1:1 Organiser
 
+A portable, config-driven Agent Skill that turns a week's issue-tracker work,
+manager feedback, chat context and previous meeting notes into a structured
+1:1 update — and writes it to the correct dated page in your wiki.
 
-**WARNING: This will boost your weekly productivity and take stress out of organising your weeks work plan with your Manager/employees**
+Previously published as *Octopus 1-1 Organiser*. The Octopus name is retained
+as a product alias; the package and primary skill are now
+`weekly-1-1-organiser`.
 
-:octopus: :wrench:
----
+## Why it exists
 
-**Quick Install:**
+Most assistants can summarise your week. This skill produces a **specific
+artefact**: a 1:1 page with feedback alignment markers, three-section ticket
+bucketing, a 7-day filter where it matters, and the manager's notes preserved
+below the divider. It works in any host that supports the open Agent Skills
+format.
 
-1. Download `weekly-1-1-updates.plugin` from this repo
-2. Drag & drop into your Cowork chat
-3. Click "Install"
-4. Run Setup Wizard to configure for your team
+## Two variants
 
-[Full setup guide →](https://github.com/ecojo/octopus-1-1-organiser/blob/main/PLUGIN_SETUP_GUIDE.md)
+| Variant | Skill name | Inputs | Output |
+|---|---|---|---|
+| **Connected** | `weekly-1-1-organiser` | Jira/Confluence/email/chat connectors | Writes the dated wiki page |
+| **Manual** | `weekly-1-1-organiser-manual` | Text you paste into the chat | Markdown draft to copy anywhere |
 
-> **⚠️ Claude Connectors (requirements):**
-> **Required:** Atlassian (JIRA + Confluence), Microsoft 365 (Outlook for feedback emails)
-> **Optional:** Slack (for team notifications), Teams (for team notifications)
+Both share the same rules, template and validation checklist in
+[`skills/references/`](skills/references/).
 
-**Ready to get started with Octopus 1-1 organiser?**
+Supporting skills: `setup-wizard`, `manager-updates`, `scaffolder`.
+`shared-utils` has been converted into reference guidance rather than a
+triggerable skill.
 
-For managers: Run the **Setup Wizard** skill to configure your team or simply drag and drop the weekly-1-1-updates.plugin into your **Claude Cowork task** to start the configuration setup wizard.
+## Install
 
-For employees: Ask "Prep my 1:1" to generate your first update.
+> The repository is being renamed from `ecojo/octopus-1-1-organiser` to
+> `ecojo/weekly-1-1-organiser`; GitHub redirects the old URL. If the rename has
+> not happened yet, use the old path in the commands below.
 
-For everyone: Let the skills run on schedule and enjoy your prepared 1:1 meetings!
+| Platform | How | Details |
+|---|---|---|
+| **Amazon Quick** | Import `adapters/amazon-quick/` as a folder or zip, then attach to a custom agent and Routine | [Quick setup](adapters/amazon-quick/QUICK_SETUP.md) |
+| **Claude** | `/plugin marketplace add <this-repo>` or drag the `.plugin` file into Cowork | [Setup guide](PLUGIN_SETUP_GUIDE.md) |
+| **ChatGPT** | Upload the skill zip in **Plugins → Skills → Create**; `@`-mention to invoke | [ChatGPT/Codex notes](adapters/chatgpt/README.md) |
+| **Codex CLI / IDE** | `npx skills add ecojo/weekly-1-1-organiser` or copy into `.agents/skills/` | [Codex notes](adapters/codex/README.md) |
+| **Antigravity** | Copy into `.agents/skills/` or `~/.gemini/config/skills/` | [Antigravity notes](adapters/antigravity/README.md) |
 
-# :octopus: Octopus Weekly 1:1 Updates Plugin
+Preview what would be installed with:
 
-Automate your team's weekly 1:1 updates. Pull JIRA, Confluence, and manager feedback automatically to generate employee 1:1 prep or consolidate all team reports for manager review.
+```sh
+npx skills add ecojo/weekly-1-1-organiser --list
+```
 
-## What Octopus 1:1 Does
+## Quick start
 
-**For employees**: Automatically gathers your JIRA updates, manager feedback email, and notes from past 1:1s, then generates a summary you can review and edit before your meeting.
+1. Run **setup-wizard** (manager) or ask "Prep my 1:1" (employee).
+2. For a no-connector demo, use the manual variant and paste sample data from
+   [`examples/fixture/`](examples/fixture/).
+3. Review the generated page before your meeting.
 
-**For managers**: Pulls all direct reports' updates (each person's JIRA work, notes, and feedback) and generates individual 1:1 prep pages so you're ready for back-to-back meetings.
+Configuration is supplied by the user at setup time. Start from
+[`config.example.json`](config.example.json) — it contains only neutral
+placeholders. See [`skills/references/config-schema.md`](skills/references/config-schema.md)
+for every field.
 
-**Automatic infrastructure**: Creates your Confluence folder structure (Weekly Feedback space, employee subfolders, year folders, placeholder pages) and pre-scaffolds next quarter's pages monthly.
+## Required capabilities
 
-## How to Install
+`issues.search`, `mail.search`, `wiki.find`, `wiki.read`, `wiki.write`.
+Optional: `chat.search`, `calendar.search`.
 
-1. Download the `weekly-1-1-updates.plugin` file
-2. In Claude Cowork, go to **Plugins** → **Install Plugin** → select this file
-3. The plugin will appear in your installed plugins list
+If a capability is unavailable, the skill asks for pasted data or switches to
+the manual variant. It never invents content. See
+[`skills/references/connectors-by-platform.md`](skills/references/connectors-by-platform.md).
 
-## Quick Start
+## Repository layout
 
-### Step 1: Run Octopus Setup Wizard .plugin (Manager Only)
+```
+skills/                     canonical skills + shared references
+adapters/                   generated per-platform bundles
+  amazon-quick/             importable skill, agent instructions, setup guide
+  chatgpt/  codex/  antigravity/
+weekly-1-1-updates-plugin/  Claude plugin (generated from skills/)
+examples/fixture/           synthetic input + golden output
+scripts/                    sync, pack and validate helpers
+```
 
-The manager should run the **Setup Wizard** skill first or drag and drop the weekly-1-1-updates.plugin into Claude Cowork:
+## Development
 
-1. Click the plugin → select "Setup Wizard" skill
-2. Answer questions about your team:
-   - Team name, manager email, timezone
-   - Each team member's name, email, JIRA boards
-   - How manager feedback emails are organized
-   - Which Confluence space to use
-   - Each person's 1:1 meeting time (auto-discover from Outlook or manual entry)
-3. The wizard will validate your connectors and create Confluence infrastructure
-4. Your team config is saved and reused by all other skills
+```sh
+./scripts/validate.sh      # frontmatter and structure checks
+./scripts/sync.sh          # regenerate adapters and plugin from skills/
+./scripts/pack.sh          # build distributable zips in dist/
+```
 
-**Required connectors before setup:**
-- JIRA (to pull work updates)
-- Confluence (to create 1:1 pages)
-- Outlook/Email (to read feedback emails)
-- Slack (optional, if your team uses it)
-- Teams (optional, if your team uses it)
+## Privacy
 
-### Step 2: Employee Prep Their 1:1 (Weekly)
+1:1 pages contain personnel information. Restrict each page to the manager
+and the named employee, keep real config out of public repos, and review the
+[security policy](SECURITY.md) before deploying to a team.
 
-**For each employee**, trigger the **Employee Update** skill to prep for their 1:1:
+## Licence
 
-- **Manual**: Ask "Prep my 1:1" or "Generate my 1:1 update"
-- **Automatic** (if scheduled during setup): Runs on their 1:1 day/time each week, creates their Confluence page automatically
-
-The skill:
-- Pulls their JIRA updates (assigned issues, closed work, blockers)
-- Reads manager feedback email
-- Gathers notes from previous 1:1 pages
-- Generates a summary page in Confluence
-- They can review, edit, and add notes before the meeting
-
-### Step 3: Manager Reviews All Reports (Weekly)
-
-**For the manager**, trigger the **Manager Updates** skill to see all team members' prep:
-
-- **Manual**: Ask "Pull all my reports' updates" or "Get team 1:1 updates"
-- **Automatic** (if scheduled during setup): Runs on each employee's 1:1 day (morning), creates their page before the meeting
-
-The skill:
-- Pulls each person's JIRA, notes, and feedback
-- Creates individual 1:1 pages for each team member
-- Provides a summary view so you're prepared for all 1:1s
-
-### Step 4: Auto-Scaffold Next Quarter (Monthly)
-
-The **Scaffolder** runs automatically every month:
-
-- Creates year folders (2026, 2027, etc.)
-- Pre-creates blank 1:1 pages for next quarter (or half-year)
-- Uses format: `[Name] - Manager 1:1 - [Date]`
-- Pages are ready weeks in advance
-
-You can also manually trigger: "Create next quarter pages"
-
-## Configuration
-
-All configuration happens in the **Setup Wizard**. Key settings:
-
-- **Team members** — Who reports to you
-- **JIRA boards** — Which boards each person works on (can be different per person)
-- **Email feedback** — How feedback is organized (folder or direct emails)
-- **Confluence space** — Where 1:1 pages live
-- **Meeting times** — Day/time of each 1:1 (auto-discover from Outlook or manual)
-- **Timezone** — For scheduling (e.g., America/Los_Angeles)
-- **Scaffold frequency** — Quarterly or half-yearly (how far ahead to create pages)
-
-To update config later, re-run the Setup Wizard.
-
-## Skills Reference
-
-| Skill | Trigger | For Whom | Frequency |
-|-------|---------|----------|-----------|
-| **Setup Wizard** | "Set up my team" | Manager (once) | One-time setup |
-| **Employee Update** | "Prep my 1:1" | Employees | Weekly (manual or scheduled) |
-| **Manager Updates** | "Pull my reports' updates" | Manager | Weekly (manual or scheduled) |
-| **Scaffolder** | "Create next quarter pages" | Auto-runs | Monthly (auto or manual) |
-
-## Example Workflow
-
-**Monday, January 15, 2026**
-
-- **Manager Marc** runs Setup Wizard:
-  - Team: Engineering
-  - Reports: David (JIRA: BCR, BonusFinder Dev), Sarah (JIRA: BonusFinder Dev), Jordan (JIRA: Infrastructure)
-  - David's 1:1: Monday 9am
-  - Sarah's 1:1: Wednesday 9am
-  - Jordan's 1:1: Friday 2pm
-  - Confluence space: "Weekly Feedback"
-
-**Monday 9am, January 15:**
-- Plugin auto-triggers David's Employee Update → generates his Monday 1:1 page
-- Plugin auto-triggers Manager Updates for David → sends Marc a summary
-- Marc reviews David's page in Confluence (JIRA work, feedback, talking points)
-- David reviews his own page, edits as needed, meets with Marc
-
-**Wednesday 9am, January 17:**
-- Plugin auto-triggers Sarah's Employee Update → generates her Wednesday 1:1 page
-- Plugin auto-triggers Manager Updates for Sarah → sends Marc a summary
-- Marc meets with Sarah
-
-**Friday 2pm, January 19:**
-- Plugin auto-triggers Jordan's Employee Update → generates his Friday 1:1 page
-- Plugin auto-triggers Manager Updates for Jordan → sends Marc a summary
-- Marc meets with Jordan
-
-**Monthly (e.g., Feb 1 at 12am):**
-- Scaffolder runs → creates Q1 pages (Jan–Mar) for David, Sarah, Jordan
-- Pages are ready for the next quarter
-
-## Troubleshooting
-
-### "Connector not found"
-Make sure you have JIRA, Confluence, and Outlook/Email connected in your workspace before running Setup Wizard.
-
-### "Confluence page not created"
-- Verify the Confluence space exists and you have write access
-- Check that employee subfolders are created (Setup Wizard should do this)
-- Re-run Setup Wizard to validate/fix the space
-
-### "No JIRA updates showing"
-- Make sure each person is assigned to issues in their configured JIRA boards
-- Check that the issue date range matches "this week"
-- Verify JIRA connector is connected and has access to those boards
-
-### "Email feedback not found"
-- Confirm the email folder/subject pattern matches your actual emails
-- Check that the Outlook/Email connector is connected
-- Re-run Setup Wizard to adjust the feedback email pattern
-
-### "Scheduled tasks not running"
-- Confirm setup was completed and config was saved
-- Check your workspace settings for task scheduling
-- Manually trigger the skill to test (e.g., "Prep my 1:1")
-
-## Tips & Best Practices
-
-### For Managers
-- Review 1:1 pages 5–10 minutes before each meeting to prepare talking points
-- Look for patterns across your team (shared blockers, capacity issues)
-- Add your own notes/feedback to pages during or after meetings
-- Use the monthly scaffolder to stay ahead—pages are ready in advance
-
-### For Employees
-- The generated summary is a starting point—personalize it with your context
-- Check your manager's feedback email before the meeting
-- Review previous 1:1 pages for continuity
-- Ask clarifying questions in the Confluence page if something is unclear
-- Add your own talking points and discussion topics
-
-### Team Best Practices
-- Set a consistent 1:1 schedule (same time each week) so automation runs reliably
-- Use consistent JIRA board naming across your team
-- Store feedback emails in a shared folder or with consistent subject lines
-- Review 1:1 pages regularly to identify trends or issues needing escalation
-
-## Privacy & Permissions
-
-- **Employee pages**: Visible to manager + that employee only (set during setup)
-- **Config**: Stored securely and used only by this plugin's skills
-- **JIRA/Confluence/Email access**: Requires the connectors you authorize during setup
-- **No data leaves your workspace**: All processing happens locally in Claude
-
-## Support & Feedback
-
-If you encounter issues or have feature requests:
-- Check the **Troubleshooting** section above
-- Re-run the **Setup Wizard** to validate your configuration
-- Review the individual skill descriptions for detailed instructions
-
----
+MIT — Copyright (c) 2026 SiliconRA. See [LICENSE](LICENSE).

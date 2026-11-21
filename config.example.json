@@ -1,72 +1,50 @@
 {
-  "setup_version": "1.0",
-  "team_info": {
-    "team_name": "Engineering",
-    "timezone": "America/Los_Angeles"
+  "team": {
+    "name": "Example Team",
+    "timezone": "Europe/London"
   },
-  "manager_mode": {
-    "is_manager": true,
-    "manager_email": "marc.garcia@company.com",
-    "manager_name": "Marc Garcia",
-    "outlook_sync": true,
-    "direct_reports": [
-      "david.hoffmann@company.com",
-      "sarah.chen@company.com",
-      "jordan.smith@company.com"
-    ]
+  "manager": {
+    "name": "Morgan Example",
+    "email": "morgan.example@example.com"
   },
   "employees": {
-    "david.hoffmann@company.com": {
-      "name": "David Hoffmann",
-      "jira_boards": ["BCR", "BonusFinder Dev"],
-      "confluence_page_pattern": "David Hoffmann - Manager 1:1 - {date}",
-      "email_config": {
-        "method": "folder",
-        "folder_name": "Weekly Feedback",
-        "subject_pattern": null
-      },
-      "one_on_one": {
-        "day": "Monday",
-        "time": "09:00",
-        "auto_discovered": true
-      }
-    },
-    "sarah.chen@company.com": {
-      "name": "Sarah Chen",
-      "jira_boards": ["BonusFinder Dev"],
-      "confluence_page_pattern": "Sarah Chen - Manager 1:1 - {date}",
-      "email_config": {
-        "method": "folder",
-        "folder_name": "Weekly Feedback",
-        "subject_pattern": null
+    "alex.example@example.com": {
+      "name": "Alex Example",
+      "issue_query": "assignee = currentUser() ORDER BY updated DESC",
+      "feedback": {
+        "pattern": "Alex 1:1 Weekly Feedback",
+        "folder": null
       },
       "one_on_one": {
         "day": "Wednesday",
-        "time": "09:00",
-        "auto_discovered": true
+        "time": "09:00"
       }
     },
-    "jordan.smith@company.com": {
-      "name": "Jordan Smith",
-      "jira_boards": ["Infrastructure", "BonusFinder Dev"],
-      "confluence_page_pattern": "Jordan Smith - Manager 1:1 - {date}",
-      "email_config": {
-        "method": "folder",
-        "folder_name": "Weekly Feedback",
-        "subject_pattern": null
+    "sam.example@example.com": {
+      "name": "Sam Example",
+      "issue_query": "assignee = currentUser() ORDER BY updated DESC",
+      "feedback": {
+        "pattern": "Sam 1:1 Weekly Feedback",
+        "folder": null
       },
       "one_on_one": {
         "day": "Friday",
-        "time": "14:00",
-        "auto_discovered": true
+        "time": "14:00"
       }
     }
   },
-  "confluence": {
-    "space_key": "WEEKLY",
-    "space_name": "Weekly Feedback",
-    "date_format": "DD MMM YYYY",
-    "parent_folder": "Weekly Feedback"
+  "wiki": {
+    "space": "DEMO",
+    "parent_page": "Example Team 1:1s",
+    "page_pattern": "{name} - Manager 1:1 - {date}",
+    "date_format": "DD MMM YYYY"
+  },
+  "settings": {
+    "lookback_days": 7,
+    "alignment_marker": "🎯",
+    "low_priority_marker": "⏳",
+    "target_rows": "10–15",
+    "max_rows": 18
   },
   "scaffold": {
     "frequency": "quarterly",
@@ -75,50 +53,17 @@
     "enabled": true
   },
   "schedule": {
-    "mode": "manager",
-    "created_schedules": [
-      {
-        "employee_email": "david.hoffmann@company.com",
-        "employee_name": "David Hoffmann",
-        "day": "Monday",
-        "time": "09:00",
-        "skill": "employee-update"
-      },
-      {
-        "employee_email": "david.hoffmann@company.com",
-        "employee_name": "David Hoffmann",
-        "day": "Monday",
-        "time": "09:00",
-        "skill": "manager-updates"
-      },
-      {
-        "employee_email": "sarah.chen@company.com",
-        "employee_name": "Sarah Chen",
-        "day": "Wednesday",
-        "time": "09:00",
-        "skill": "employee-update"
-      },
-      {
-        "employee_email": "sarah.chen@company.com",
-        "employee_name": "Sarah Chen",
-        "day": "Wednesday",
-        "time": "09:00",
-        "skill": "manager-updates"
-      }
-    ]
+    "mode": "manual"
   },
   "connectors_required": [
-    "jira",
-    "confluence",
-    "outlook",
-    "slack (optional)",
-    "teams (optional)"
+    "issues.search",
+    "mail.search",
+    "wiki.find",
+    "wiki.read",
+    "wiki.write"
   ],
-  "last_updated": "2026-01-15T09:00:00Z",
-  "created_infrastructure": {
-    "confluence_space_created": true,
-    "parent_folder_created": true,
-    "employee_folders_created": 3,
-    "year_folders_created": 3
-  }
+  "connectors_optional": [
+    "chat.search",
+    "calendar.search"
+  ]
 }

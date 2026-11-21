@@ -1,9 +1,10 @@
 {
-  "name": "weekly-1-1-updates",
-  "version": "0.1.0",
-  "description": "Automate team weekly 1:1 updates. Configurable plugin that pulls JIRA, Confluence, and manager feedback to generate employee 1:1 prep or consolidate all team reports for manager review.",
+  "name": "weekly-1-1-organiser",
+  "version": "1.0.0",
+  "description": "SiliconRA Weekly 1:1 Organiser — generate structured weekly 1:1 updates from issue tracker, manager feedback, chat and wiki, then write them to dated 1:1 pages.",
   "author": {
-    "name": "David Hoffmann"
+    "name": "SiliconRA"
   },
-  "keywords": ["1:1", "updates", "team", "jira", "confluence", "feedback"]
+  "license": "MIT",
+  "keywords": ["1:1", "weekly", "updates", "manager", "employee", "jira", "confluence", "amazon-quick", "skills"]
 }
