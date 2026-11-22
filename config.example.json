@@ -1,4 +1,7 @@
 {
+  "runtime": {
+    "llm": "example-model"
+  },
   "team": {
     "name": "Example Team",
     "timezone": "Europe/London"

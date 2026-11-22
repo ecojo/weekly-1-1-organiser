@@ -12,6 +12,7 @@ several different dates.
 
 | Field | Meaning | Default |
 |---|---|---|
+| `runtime.llm` | Optional informational model identifier for the review pack (e.g. `amazon-nova`, `claude`, `gpt`) | — |
 | `team.name` | Display name for the team | — (ask) |
 | `team.timezone` | IANA timezone for scheduling | — (ask) |
 | `manager.name` | Manager's full name | — (ask) |
@@ -76,6 +77,7 @@ Use these in docs, fixtures and tests:
 
 ```json
 {
+  "runtime": { "llm": "example-model" },
   "team": { "name": "Example Team", "timezone": "Europe/London" },
   "manager": {
     "name": "Morgan Example",
@@ -129,6 +131,9 @@ Use these in docs, fixtures and tests:
   "schedule": { "mode": "manual" }
 }
 ```
+
+`runtime.llm` is informational only: record it for the platform review pack if
+known, but do not change page content or skill behaviour based on it.
 
 ## Migration from older configs
 

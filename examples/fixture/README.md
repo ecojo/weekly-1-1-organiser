@@ -10,6 +10,7 @@ contain only invented names, keys and URLs.
 | `chat.md` | Raw chat highlights |
 | `previous-page.md` | Existing 1:1 page, including the manager section |
 | `expected-output.md` | Golden output after applying all rules |
+| `manager-section-cases.md` | Regression cases for preserving the manager's section |
 
 Assumed config: employee `Alex Example`, manager `Morgan Example`,
 lookback 7 days from **21 Nov 2026**, date format `DD MMM YYYY`, markers

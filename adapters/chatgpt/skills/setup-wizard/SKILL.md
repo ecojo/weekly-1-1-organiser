@@ -14,7 +14,8 @@ can reuse it. No fixed meeting weekday is required: dates come from Outlook.
 
 ## What you will configure
 
-1. **Team basics** — team name, manager name and email, timezone, calendar scope.
+1. **Team basics** — team name, manager name and email, timezone, calendar
+   scope, and the optional model identifier (`runtime.llm`) if known.
 2. **Team members** — name, email, issue boards/queries and the Outlook 1:1
    event that identifies their meeting.
 3. **Feedback email** — subject pattern and/or shared folder.
@@ -33,7 +34,9 @@ can reuse it. No fixed meeting weekday is required: dates come from Outlook.
    it. See `../references/connectors-by-platform.md`. Record missing
    capabilities and tell the user which skills will need pasted data instead.
 2. **Ask the questions** in `../references/config-schema.md`, in order. Do not
-   guess values. Accept "use defaults" where a default exists.
+   guess values. Accept "use defaults" where a default exists. Record
+   `runtime.llm` only if the user knows it; it is informational and does not
+   change any behaviour.
 3. **Discover meeting dates from Outlook.** Search the configured calendar
    scope for 1:1 events, then show the user a table of event title, employee,
    date/time and recurrence. Confirm which event belongs to which employee and

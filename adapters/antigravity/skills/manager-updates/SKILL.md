@@ -25,9 +25,10 @@ often on different days.
    wiki page pattern.
 4. Construct each page name from `wiki.page_pattern` + that person's meeting
    date. Create the page with `wiki.write` if it does not exist, or update the
-   existing dated child page. Preserve the manager's section below the `----`
-   divider exactly (including its title), and restrict visibility to that
-   employee and the manager.
+   existing dated child page. Copy the manager's section below the divider
+   (`----` or `---`) verbatim — including its exact title, custom wording and
+   empty bullets — and restrict visibility to that employee and the manager.
+   Never overwrite or regenerate that section.
 5. Produce a manager summary containing, per person:
    - the constructed page name and link;
    - the meeting date and its source (calendar event or override);

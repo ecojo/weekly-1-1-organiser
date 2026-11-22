@@ -21,6 +21,7 @@ central AI team. Record a pass/fail and any screenshot or output for each row.
 | A2 | Compare the generated draft with `examples/fixture/expected-output.md`. | Matches: three section header rows, `DEMO-101` in Blockers despite its old date, `DEMO-112` excluded, `DEMO-103` not duplicated, `🟧` on DEMO-101/120, `⏳` on DEMO-121. | |
 | A3 | Check the manager section. | "Points for Alignment" and both bullets are unchanged below `----`. | |
 | A4 | Check the reported page name. | `Alex Example - Manager 1:1 - 25 Nov 2026`, with a clear note that no page was created. | |
+| A5 | Run the four cases in `examples/fixture/manager-section-cases.md`. | Custom headings, three-hyphen dividers and missing sections handled exactly as specified; no manager text is overwritten. | |
 
 ## B. Connected variant (employee mode)
 
@@ -32,6 +33,7 @@ central AI team. Record a pass/fail and any screenshot or output for each row.
 | B4 | Compare page content with the golden output. | Same as A2; manager title preserved. | |
 | B5 | Check page permissions. | Only the manager and Alex can view it. | |
 | B6 | Revoke only the calendar connection and re-run. | Asks for a date or uses `date_override`; does not invent a weekday. | |
+| B7 | Put a custom heading such as "Points for Alignment — Q1 priorities" in the manager section and re-run. | Heading and notes are unchanged; no second heading is added. | |
 
 ## C. Manager mode
 

@@ -43,12 +43,17 @@ collected data. The page name itself is reported separately, outside the page.
 - Three section header rows are mandatory, even if a section has no entries.
 - Use the configured markers. Prefer Unicode emoji (`🟧`, `⏳`, `✅`) over
   wiki-specific shortcodes, which often fail to render through APIs.
-- The divider is four hyphens on its own line: `----`.
+- For a new page the divider is four hyphens on its own line: `----`. If the
+  existing page uses three (`---`), copy that exact line — never normalise it.
 - `{{MANAGER_SECTION_TITLE}}` is `settings.manager_section_title` (default
-  "Points for Alignment"). If the existing page already has a title line under
-  the @mention, keep that exact line instead of replacing it.
-- `{{MANAGER_SECTION_PRESERVED_EXACTLY}}` means the notes below the divider and
-  after the title, copied byte-for-byte — including empty bullets.
+  "Points for Alignment"). It is written **only** for a new page or a
+  completely empty manager section.
+- An existing title under the @mention is copied verbatim, even if it says
+  something different (for example "Points for Alignment — Q1 priorities").
+  Never replace it, add a second title, or reorder the notes.
+- `{{MANAGER_SECTION_PRESERVED_EXACTLY}}` is the raw substring from after the
+  `@{{MANAGER_NAME}}` mention to the end of the page, copied byte-for-byte —
+  including the existing title, custom wording and empty bullets.
 - If there are no completions in the window, replace that section's rows with
   a single row: `| | No completions in the past {{LOOKBACK_DAYS}} days. | | |`.
 - If no chat material exists, use one line: "No material chat activity in the

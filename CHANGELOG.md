@@ -10,13 +10,17 @@ All notable changes to SiliconRA Weekly 1:1 Organiser are documented here.
   event matching and an explicit `date_override` fallback.
 - Calendar-driven scaffolding: page dates come from each 1:1 series rather
   than a fixed weekday.
-- Automatic creation of a missing dated Confluence page under the configured
-  parent page, using a page name constructed from `wiki.page_pattern` and the
-  meeting date.
+- Retained and generalised the existing Confluence page-name construction and
+  missing-page creation: names come from `wiki.page_pattern` + the Outlook
+  date, and the constructed name/link are reported.
 - Configurable manager-section title (`settings.manager_section_title`,
-  default "Points for Alignment"), inserted when the existing page has none.
-- Validation checks for calendar-derived dates, page creation and page-name
-  reporting.
+  default "Points for Alignment"), used only for new or empty sections.
+- Explicit read-only handling of the manager section, with regression cases
+  for custom headings, older three-hyphen dividers and empty sections.
+- Optional informational `runtime.llm` field recorded by the setup wizard for
+  platform review packs.
+- Validation checks for calendar-derived dates, page creation, page-name
+  reporting and manager-section preservation.
 
 ### Changed
 

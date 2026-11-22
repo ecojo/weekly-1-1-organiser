@@ -28,9 +28,11 @@ Run before writing, and again after writing if the host exposes a read-back.
       "(latest available)" if older than the lookback window.
 - [ ] Alignment heading includes manager name and email date.
 - [ ] Chat section has 4–6 bullets or the explicit "no material activity" line.
-- [ ] Manager section below the divider keeps its existing title, or has the
-      configured `manager_section_title` inserted; notes are unchanged,
-      including empty bullets.
+- [ ] Manager section was copied **verbatim** from after the @mention to the
+      end of the page: existing title (custom wording included), notes, empty
+      bullets and the original divider (`---` or `----`) are unchanged.
+- [ ] No manager title was replaced, regenerated or duplicated. A configured
+      title was written only for a new page or a completely empty section.
 - [ ] Ticket links use the configured issue base URL.
 
 ## Safety

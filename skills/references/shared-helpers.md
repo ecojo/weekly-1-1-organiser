@@ -42,11 +42,14 @@ using available connectors.
   `wiki.space`. One match → use it. None → create it with `wiki.write` as a
   child of `wiki.parent_page`, with manager + employee permissions and a stub
   manager section. Several → prefer the one under `wiki.parent_page`, else ask.
-- `extract_manager_section(page)` — take everything below the `----` divider
-  and after the `@manager` mention. Preserve whitespace and empty bullets.
-- `apply_manager_title(existing_section, config)` — keep an existing title
-  line (for example "Points for Alignment") exactly; if absent, insert
-  `settings.manager_section_title` before the preserved notes.
+- `extract_manager_section(page)` — find the divider (`----` or `---`; copy the
+  exact line found), then take the **raw substring** from immediately after the
+  `@manager` mention to the end of the page. Preserve the title, custom
+  wording, whitespace and empty bullets verbatim. If no divider or @mention is
+  found, stop and ask for the page — do not reconstruct it.
+- `seed_manager_section(config)` — only for a brand-new page or a completely
+  empty manager section: write `settings.manager_section_title` plus one empty
+  bullet. Never use this to replace or supplement existing notes.
 - `write_page(page, content)` — update the dated page only; verify permissions
   after writing where the connector supports it.
 - `report_page(page_name, link, meeting_date, source)` — include these in the

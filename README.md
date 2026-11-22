@@ -40,6 +40,10 @@ Supporting skills: `setup-wizard`, `manager-updates`, `scaffolder`.
 | **Codex CLI / IDE** | `npx skills add ecojo/weekly-1-1-organiser` or copy into `.agents/skills/` | [Codex notes](adapters/codex/README.md) |
 | **Antigravity** | Copy into `.agents/skills/` or `~/.gemini/config/skills/` | [Antigravity notes](adapters/antigravity/README.md) |
 
+Skill names are unprefixed (`weekly-1-1-organiser`,
+`weekly-1-1-organiser-manual`, `setup-wizard`, `manager-updates`, `scaffolder`).
+Remove any older `bf-`-prefixed copies before installing.
+
 Preview what would be installed with:
 
 ```sh

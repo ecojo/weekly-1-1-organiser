@@ -100,9 +100,10 @@ affects the person's open work. If nothing material, say so explicitly.
      ambiguous, ask the user.
 4. Never write to the parent index page itself.
 
-Read the existing page and capture everything below the `----` divider,
-including the manager-section title. Preserve it **exactly**, including empty
-bullets.
+Read the existing page and capture the raw text below the divider and after
+the manager @mention, including the manager-section title. Preserve it
+**exactly**, including empty bullets. See "Manager section — never overwrite
+it" below.
 
 ## Bucketing rules (critical)
 
@@ -136,12 +137,26 @@ Build a four-column table: `Ticket | Summary | Status | Notes`.
 Draft the page using `references/output-template.md`. Do not add sections
 that are not in the template.
 
-For the section below the divider:
-- If the existing page has a title under `@{{MANAGER_NAME}}` (for example
-  "Points for Alignment"), keep that exact line.
-- If it has no title, insert `{{MANAGER_SECTION_TITLE}}` from config between
-  the @mention and the preserved notes.
-- Preserve the remaining notes byte-for-byte, including empty bullets.
+### Manager section — never overwrite it
+
+The manager's section is **read-only input**. The previous bug that wiped the
+manager's "Points for Alignment" notes must not recur:
+
+1. Find the divider line in the existing page. Accept both `----` and `---`
+   (older pages use three hyphens) and copy the exact line you found.
+2. Take the raw substring from immediately after the `@{{MANAGER_NAME}}`
+   mention to the end of the page. This includes the manager-section title
+   (for example "Points for Alignment"), any custom wording, empty bullets and
+   all whitespace. Copy it **verbatim**.
+3. Never regenerate, summarise, translate, normalise, reorder, deduplicate or
+   "improve" any of it. Never substitute the configured title for an existing
+   title, even if the wording differs, and never add a second title.
+4. Only when the page is brand new, or the manager section is completely
+   empty, seed it with `{{MANAGER_SECTION_TITLE}}` and one empty bullet. That
+   is the **only** case where this skill writes a title itself.
+5. For an **existing** page, if you cannot find a divider or the manager
+   @mention, stop and ask the user for the page. Do not guess or rebuild the
+   manager section. (Newly created pages use rule 4.)
 
 ## Writing back
 

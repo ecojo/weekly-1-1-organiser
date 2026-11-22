@@ -15,6 +15,10 @@ in Amazon Quick desktop.
 The importable skill is at the root of this folder (`SKILL.md`). The offline
 variant is in `manual/SKILL.md` and can be imported as a second skill.
 
+Skill names are unprefixed: `weekly-1-1-organiser` and
+`weekly-1-1-organiser-manual`. If you have older copies with a `bf-` prefix
+installed, remove them before importing so the wrong skill does not activate.
+
 ## 2. Connections
 
 In Quick, add only the connections you need:
