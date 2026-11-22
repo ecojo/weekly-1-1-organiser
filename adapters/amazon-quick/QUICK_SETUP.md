@@ -66,6 +66,9 @@ scaffolding, add a monthly Routine on day 1.
 
 ## 5. Test and review
 
+Work through [`QUICK_TEST_CHECKLIST.md`](QUICK_TEST_CHECKLIST.md) and record
+pass/fail results for the submission pack.
+
 - Start with the **manual variant** and the synthetic fixture in
   `examples/fixture/`. Compare the result with `expected-output.md`.
 - Then test the connected variant with real connectors on one employee.

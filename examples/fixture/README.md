@@ -16,14 +16,16 @@ lookback 7 days from **21 Nov 2026**, date format `DD MMM YYYY`, markers
 `🟧` (aligned) and `⏳` (low priority), manager-section title
 "Points for Alignment".
 
-The Outlook 1:1 event for Alex is on **25 Nov 2026**, so the constructed
-Confluence page name is:
+The Outlook 1:1 event for Alex is on **25 Nov 2026** and Sam's is on
+**27 Nov 2026** (different days, for manager-mode testing). The constructed
+Confluence page names are:
 
 ```text
 Alex Example - Manager 1:1 - 25 Nov 2026
+Sam Example - Manager 1:1 - 27 Nov 2026
 ```
 
-The connected skill creates that page if it does not exist and reports its name
+The connected skill creates each page if it does not exist and reports its name
 and link outside the generated content. The manual variant reports the same
 name without creating the page.
 
