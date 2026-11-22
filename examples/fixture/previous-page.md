@@ -6,7 +6,7 @@
 
 ## 1-1 Update
 
-🎯 Alignment with next steps From Morgan — 12 Nov 2026
+🟧 Alignment with next steps From Morgan — 12 Nov 2026
 
 | Ticket | Summary | Status | Notes |
 |--------|---------|--------|-------|
@@ -24,6 +24,8 @@
 ----
 
 @Morgan Example
+
+Points for Alignment
 
 * Confirm Q1 priorities with Alex.
 *

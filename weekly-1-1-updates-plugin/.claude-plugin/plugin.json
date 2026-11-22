@@ -1,6 +1,6 @@
 {
   "name": "weekly-1-1-organiser",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "SiliconRA Weekly 1:1 Organiser — generate structured weekly 1:1 updates from issue tracker, manager feedback, chat and wiki, then write them to dated 1:1 pages.",
   "author": {
     "name": "SiliconRA"

@@ -1,18 +1,21 @@
 ---
 name: weekly-1-1-organiser
-description: Prepare a weekly 1:1 update from issue-tracker tickets, manager feedback email, wiki notes and chat context, then write it to the dated 1:1 page. Use when asked to "prep my 1:1", "prepare weekly 1:1", "generate my 1:1 update", "pull my updates for 1:1", or before any recurring manager/employee one-to-one. Reads connected tools or falls back to pasted data. Part of SiliconRA Weekly 1:1 Organiser.
+description: Prepare a weekly 1:1 update from issue-tracker tickets, manager feedback email, wiki notes and chat context, then write it to the dated 1:1 page named from the Outlook meeting date. Use when asked to "prep my 1:1", "prepare weekly 1:1", "generate my 1:1 update", "pull my updates for 1:1", or before any recurring manager/employee one-to-one. Reads connected tools or falls back to pasted data. Part of SiliconRA Weekly 1:1 Organiser.
 license: MIT
 compatibility: Needs a host that supports Agent Skills. External systems are reached only through host-provided connectors; if a connector is unavailable, ask the user to paste the data instead.
 metadata:
   author: SiliconRA
-  version: "1.0.0"
+  version: "1.1.0"
   product: "SiliconRA Weekly 1:1 Organiser"
 ---
 
 # Weekly 1:1 Organiser — Connected
 
 Generate a structured, review-ready 1:1 update from the user's configured data
-sources and write it to the correct dated 1:1 page.
+sources and write it to the correct dated 1:1 page. The meeting date always
+comes from the Outlook 1:1 calendar event for this person — there is no fixed
+weekday routine. In manager mode, each employee's date is resolved
+independently.
 
 This is the **connected** variant. If no connectors are available, use the
 `weekly-1-1-organiser-manual` skill instead, which works entirely from pasted
@@ -25,17 +28,37 @@ text.
    skill or ask the user for the required values. Never invent identifiers.
 2. **Check capabilities.** Determine which of these capabilities the host
    actually provides: `issues.search`, `mail.search`, `chat.search`,
-   `wiki.find`, `wiki.read`, `wiki.write`.
+   `calendar.search`, `wiki.find`, `wiki.read`, `wiki.write`.
    See `references/connectors-by-platform.md` for how each maps to a
    platform's tools. If a capability is missing, ask the user to paste that
-   input rather than failing or fabricating data.
+   input rather than failing or fabricating data. `calendar.search` is the
+   normal source of the meeting date; if it is missing, use a configured
+   `date_override` or ask the user for the date.
 3. **Resolve the subject.** The config identifies whose 1:1 this is
    (`employee_name`, `manager_name`, issue boards/queries, wiki space, page
    pattern, feedback-email pattern). If the request is ambiguous, ask.
 
 ## Data collection
 
-Collect all four sources before drafting:
+### 0. Meeting date — resolve this first
+
+The target date is derived from the Outlook 1:1 meeting for this employee:
+
+1. If `employees[].one_on_one.date_override` is set, use it and label the run
+   "manual date override".
+2. Otherwise call `calendar.search` for `one_on_one.calendar_query` (or
+   `calendar.event_pattern` plus the employee name) in the configured scope,
+   over `[today - calendar.lookback_days, today + calendar.lookahead_days]`.
+3. Prefer an event whose attendees include the employee and the manager, then
+   an exact title match, then the occurrence closest to today (upcoming first).
+4. If several events remain equally likely, ask the user to confirm. In an
+   unattended Routine, take the closest upcoming event and note the ambiguity.
+5. If no event is found and there is no override, ask for the date. Do **not**
+   fall back to a fixed weekday. A date inferred from the most recent wiki page
+   is only a hint and must be labelled as such.
+
+Run this step **per employee** in manager mode: 1:1s are frequently on
+different days. Never reuse one person's date for another.
 
 ### 1. Issues (issue tracker)
 
@@ -61,17 +84,25 @@ Read the configured channels from the last `{{LOOKBACK_DAYS}}` days. Pick 4–6
 decision-bearing human bullets; skip pure bot noise unless it is urgent and
 affects the person's open work. If nothing material, say so explicitly.
 
-### 4. Wiki page
+### 4. Wiki page name and creation
 
-Find the **dated child page** for this 1:1, not the parent index:
+1. Format the resolved meeting date with `{{DATE_FORMAT}}`.
+2. Construct the exact page name by rendering `{{PAGE_PATTERN}}` with `{name}` =
+   employee name and `{date}` = the formatted meeting date. This constructed
+   name is the contract between the skills: the agent creates the page when it
+   is missing, so the user does not have to pre-create it manually.
+3. Call `wiki.find` for `{{WIKI_SPACE}}` and that exact title:
+   - **One match** — read it.
+   - **No match** — create it with `wiki.write` as a child of `{{PARENT_PAGE}}`,
+     restricted to the manager and this employee. Treat its manager section as
+     empty (use the configured manager-section title plus one empty bullet).
+   - **Several matches** — prefer the one under `{{PARENT_PAGE}}`; if still
+     ambiguous, ask the user.
+4. Never write to the parent index page itself.
 
-1. Compute the date string using `{{DATE_FORMAT}}`.
-2. Look up `{{WIKI_SPACE}}` and title `{{PAGE_PATTERN}}` with that date.
-3. If exactly one match, use it. If none, use the most recent matching page,
-   and add a note that the dated page was missing.
-4. Read the existing page and capture everything below the `---` divider
-   (the manager's section). Preserve it **exactly**, including empty bullets.
-   Never overwrite the parent index page.
+Read the existing page and capture everything below the `----` divider,
+including the manager-section title. Preserve it **exactly**, including empty
+bullets.
 
 ## Bucketing rules (critical)
 
@@ -103,14 +134,25 @@ Build a four-column table: `Ticket | Summary | Status | Notes`.
 ## Output
 
 Draft the page using `references/output-template.md`. Do not add sections
-that are not in the template. The manager section below the divider must be
-byte-for-byte what was read from the existing page.
+that are not in the template.
+
+For the section below the divider:
+- If the existing page has a title under `@{{MANAGER_NAME}}` (for example
+  "Points for Alignment"), keep that exact line.
+- If it has no title, insert `{{MANAGER_SECTION_TITLE}}` from config between
+  the @mention and the preserved notes.
+- Preserve the remaining notes byte-for-byte, including empty bullets.
 
 ## Writing back
 
-Write the new content to the dated child page only. Preserve page permissions
-(manager + employee). Report the page link and a short summary to the user so
-they can review and edit before the meeting.
+- Existing page → update it in place.
+- Missing page → create it with `wiki.write` using the constructed name, then
+  write the draft. Creating the page is part of this skill; it is not a manual
+  user step.
+- Preserve page permissions (manager + employee).
+- **Report outside the page**: the constructed page name and link/URL, the
+  resolved meeting date and its source (calendar event title or override), a
+  short summary, and any data sources you could not reach.
 
 ## Validation
 

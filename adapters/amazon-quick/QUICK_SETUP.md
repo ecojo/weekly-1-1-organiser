@@ -23,12 +23,14 @@ In Quick, add only the connections you need:
 |---|---|---|
 | `issues.search` | Jira (or other issue-tracker connection) | Yes |
 | `wiki.find` / `read` / `write` | Confluence | Yes |
-| `mail.search` | Outlook / Exchange | Yes |
+| `mail.search` | Outlook / Exchange mail | Yes |
+| `calendar.search` | Outlook calendar | Yes, unless every employee has a `date_override` |
 | `chat.search` | Slack or Teams | No |
-| `calendar.search` | Outlook calendar | No |
 
-Grant the minimum scopes: read issues, read mail, read/write pages in the
-configured space. Do not grant organisation-wide write access.
+The Outlook event supplies the meeting date, which in turn determines the
+Confluence page name. Grant the minimum scopes: read issues, read mail, read
+calendar, read/write pages in the configured space. Do not grant
+organisation-wide write access.
 
 ## 3. Custom agent
 
@@ -47,24 +49,32 @@ manager and employees who need it.
 ## 4. Schedule with a Routine
 
 Quick Routines run in the cloud, so they work even when the desktop app is
-closed. This is the recommended replacement for the old Claude scheduled task.
+closed. This is the recommended replacement for the old scheduled task.
 
-1. Create a Routine that invokes the custom agent.
-2. Set the cadence to the morning of each 1:1 (e.g. every Wednesday 08:00).
-3. Set the timezone explicitly in the prompt or agent instructions.
+1. Create a Routine that invokes the custom agent **every working morning**
+   (for example 08:00), with the timezone set explicitly.
+2. The agent checks Outlook for that day's 1:1s and prepares only the matching
+   people. This handles changing dates and managers whose reports meet on
+   different days.
+3. If you prefer per-person timing, create one Routine per employee, but still
+   resolve the date from the calendar rather than hard-coding a weekday.
 4. Store output in Agent Files; enable the briefing page if your team uses it.
 5. Use **Run now** to test before relying on the schedule.
 
-For the manager view, add a second Routine before the first 1:1 of the day.
-For scaffolding, add a monthly Routine on day 1.
+For the manager view, use the same daily Routine in manager mode. For
+scaffolding, add a monthly Routine on day 1.
 
 ## 5. Test and review
 
 - Start with the **manual variant** and the synthetic fixture in
   `examples/fixture/`. Compare the result with `expected-output.md`.
 - Then test the connected variant with real connectors on one employee.
-- Confirm the generated page is the **dated child page**, not the index.
-- Confirm the manager's section below the divider is unchanged.
+- Confirm the meeting date came from the Outlook event and that the page name
+  is `Alex Example - Manager 1:1 - 25 Nov 2026` for the fixture date.
+- Confirm a missing page is created, the generated page is the **dated child
+  page**, not the index, and its name and link are reported back.
+- Confirm the manager's section below the divider is unchanged, including its
+  "Points for Alignment" title.
 - Confirm permissions are manager + employee only.
 
 Record the results for your central AI team review pack together with
@@ -85,5 +95,7 @@ Record the results for your central AI team review pack together with
 |---|---|
 | Skill not listed | Re-import; ensure `SKILL.md` is at the folder root |
 | Connector error | Connection missing or scopes too narrow |
-| Wrong page updated | Config `page_pattern`/`wiki.space`; never write to the index page |
+| Wrong meeting date | `one_on_one.calendar_query` vs Outlook event title/attendees; or set `date_override` |
+| Wrong page name | Config `wiki.page_pattern`, `wiki.date_format` and `wiki.space` |
+| Page not created | Confluence write permission and parent page existence |
 | Routine did not run | Timezone, enabled state, and agent publish status |

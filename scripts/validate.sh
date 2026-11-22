@@ -31,13 +31,54 @@ for json in config.example.json weekly-1-1-updates-plugin/.claude-plugin/plugin.
   if python3 -m json.tool "$json" >/dev/null 2>&1; then check OK "$json"; else check FAIL "$json"; fi
 done
 
+echo "Config contract checks"
+if python3 - <<'PY'
+import json, sys
+with open('config.example.json', encoding='utf-8') as f:
+    config = json.load(f)
+employees = config.get('employees', {}).values()
+ok = (
+    config.get('calendar', {}).get('scope') == 'manager'
+    and config.get('settings', {}).get('alignment_marker') == '\U0001f7e7'
+    and config.get('settings', {}).get('manager_section_title') == 'Points for Alignment'
+    and all('calendar_query' in person.get('one_on_one', {}) for person in employees)
+    and all('day' not in person.get('one_on_one', {}) for person in employees)
+    and 'calendar.search' in config.get('connectors_required', [])
+    and '{date}' in config.get('wiki', {}).get('page_pattern', '')
+)
+sys.exit(0 if ok else 1)
+PY
+then
+  check OK "calendar dates, marker, heading and page pattern configured"
+else
+  check FAIL "config contract mismatch"
+fi
+
 echo "Portability checks (no personal identifiers in portable files)"
 if grep -rInE 'David Hoffmann|Marc Garcia|gdcgroup|BonusFinder|logo_align|BCR-' \
     --include='*.md' --include='*.json' --include='*.sh' \
-    skills adapters config.example.json README.md PLUGIN_SETUP_GUIDE.md 2>/dev/null; then
+    --exclude=validate.sh --exclude-dir=.git --exclude-dir=dist . 2>/dev/null; then
   check FAIL "personal identifiers found"
 else
   check OK "no personal identifiers found"
+fi
+
+echo "Product-name checks"
+if grep -rInE 'Octopus|octopus' \
+    --include='*.md' --include='*.json' --include='*.sh' \
+    --exclude=validate.sh --exclude-dir=.git --exclude-dir=dist . 2>/dev/null; then
+  check FAIL "legacy product name found"
+else
+  check OK "no legacy product names"
+fi
+
+echo "Marker checks"
+if grep -rInF '🎯' \
+    --include='*.md' --include='*.json' --include='*.sh' \
+    --exclude=validate.sh --exclude-dir=.git --exclude-dir=dist . 2>/dev/null; then
+  check FAIL "deprecated alignment marker found"
+else
+  check OK "orange square marker only"
 fi
 
 echo

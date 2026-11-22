@@ -8,7 +8,7 @@ cd "$ROOT"
 CANON="$ROOT/skills"
 SKILLS=(weekly-1-1-organiser weekly-1-1-organiser-manual setup-wizard manager-updates scaffolder)
 
-# Retire skill names from the original Octopus release.
+# Remove obsolete skill folders from earlier package layouts.
 rm -rf "$CANON/employee-update" "$CANON/shared-utils"
 rm -f "$ROOT/.DS_Store" "$ROOT/weekly-1-1-updates-plugin/.DS_Store"
 

@@ -7,6 +7,12 @@
     "name": "Morgan Example",
     "email": "morgan.example@example.com"
   },
+  "calendar": {
+    "scope": "manager",
+    "event_pattern": "1:1",
+    "lookback_days": 7,
+    "lookahead_days": 14
+  },
   "employees": {
     "alex.example@example.com": {
       "name": "Alex Example",
@@ -16,8 +22,8 @@
         "folder": null
       },
       "one_on_one": {
-        "day": "Wednesday",
-        "time": "09:00"
+        "calendar_query": "Alex Example 1:1",
+        "date_override": null
       }
     },
     "sam.example@example.com": {
@@ -28,8 +34,8 @@
         "folder": null
       },
       "one_on_one": {
-        "day": "Friday",
-        "time": "14:00"
+        "calendar_query": "Sam Example 1:1",
+        "date_override": null
       }
     }
   },
@@ -41,8 +47,9 @@
   },
   "settings": {
     "lookback_days": 7,
-    "alignment_marker": "🎯",
+    "alignment_marker": "🟧",
     "low_priority_marker": "⏳",
+    "manager_section_title": "Points for Alignment",
     "target_rows": "10–15",
     "max_rows": 18
   },
@@ -58,12 +65,12 @@
   "connectors_required": [
     "issues.search",
     "mail.search",
+    "calendar.search",
     "wiki.find",
     "wiki.read",
     "wiki.write"
   ],
   "connectors_optional": [
-    "chat.search",
-    "calendar.search"
+    "chat.search"
   ]
 }

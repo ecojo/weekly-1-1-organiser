@@ -1,7 +1,8 @@
 # Output template
 
 Use this exact structure for the generated 1:1 page. Replace `{{...}}`
-placeholders with values from config and collected data.
+placeholders with values from config, the resolved Outlook meeting date and
+collected data. The page name itself is reported separately, outside the page.
 
 ```markdown
 @{{EMPLOYEE_NAME}}
@@ -32,17 +33,22 @@ placeholders with values from config and collected data.
 
 @{{MANAGER_NAME}}
 
+{{MANAGER_SECTION_TITLE}}
+
 {{MANAGER_SECTION_PRESERVED_EXACTLY}}
 ```
 
 ## Rules
 
 - Three section header rows are mandatory, even if a section has no entries.
-- Use the configured markers. Prefer Unicode emoji (`🎯`, `⏳`, `✅`) over
+- Use the configured markers. Prefer Unicode emoji (`🟧`, `⏳`, `✅`) over
   wiki-specific shortcodes, which often fail to render through APIs.
 - The divider is four hyphens on its own line: `----`.
-- `{{MANAGER_SECTION_PRESERVED_EXACTLY}}` means the text below the divider on
-  the existing page, copied byte-for-byte — including empty bullets.
+- `{{MANAGER_SECTION_TITLE}}` is `settings.manager_section_title` (default
+  "Points for Alignment"). If the existing page already has a title line under
+  the @mention, keep that exact line instead of replacing it.
+- `{{MANAGER_SECTION_PRESERVED_EXACTLY}}` means the notes below the divider and
+  after the title, copied byte-for-byte — including empty bullets.
 - If there are no completions in the window, replace that section's rows with
   a single row: `| | No completions in the past {{LOOKBACK_DAYS}} days. | | |`.
 - If no chat material exists, use one line: "No material chat activity in the
@@ -51,13 +57,24 @@ placeholders with values from config and collected data.
 
 ## Empty-manager-section case
 
-If the existing page has no content below the divider, preserve the empty
-manager mention and bullet:
+For a newly created page with no notes below the divider, write:
 
 ```markdown
 ----
 
 @{{MANAGER_NAME}}
 
+{{MANAGER_SECTION_TITLE}}
+
 *
 ```
+
+## Reporting the page
+
+Outside the fenced page content, report:
+
+- **Page name:** the constructed `wiki.page_pattern` string with the meeting
+  date (for example `Alex Example - Manager 1:1 - 25 Nov 2026`).
+- **Page link:** the URL returned by the wiki connector, if available.
+- **Meeting date:** the resolved date and its source (Outlook event title or
+  manual override).

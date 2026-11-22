@@ -13,7 +13,19 @@ contain only invented names, keys and URLs.
 
 Assumed config: employee `Alex Example`, manager `Morgan Example`,
 lookback 7 days from **21 Nov 2026**, date format `DD MMM YYYY`, markers
-`🎯` (aligned) and `⏳` (low priority).
+`🟧` (aligned) and `⏳` (low priority), manager-section title
+"Points for Alignment".
+
+The Outlook 1:1 event for Alex is on **25 Nov 2026**, so the constructed
+Confluence page name is:
+
+```text
+Alex Example - Manager 1:1 - 25 Nov 2026
+```
+
+The connected skill creates that page if it does not exist and reports its name
+and link outside the generated content. The manual variant reports the same
+name without creating the page.
 
 ## What the golden output checks
 
@@ -23,4 +35,5 @@ lookback 7 days from **21 Nov 2026**, date format `DD MMM YYYY`, markers
 - `DEMO-101` and `DEMO-120` get the alignment marker from the email.
 - `DEMO-121` gets the low-priority marker.
 - Completed rows use the `✅ Done` marker regardless of Done/Resolved.
-- The manager section below `----` is unchanged, including the empty bullet.
+- The manager section below `----` is unchanged, including the
+  "Points for Alignment" title and the empty bullet.
